@@ -2,7 +2,7 @@
 param (
     [string]$InstallPath = $(
         If (($env:OS -eq 'Windows_NT') -Or ($PSVersionTable.platform -eq 'Win32NT')){
-            Join-Path $env:ProgramFiles 'WindowsPowerShell\Modules\WorkdayApi'
+            Join-Path $env:PSModulePath.split(";")[0] '/WorkdayApi'
         }ElseIf(($PSVersionTable.platform -eq 'Unix')){
             Join-Path ~/.local/share/ 'powershell/Modules/WorkdayApi'
         }),
