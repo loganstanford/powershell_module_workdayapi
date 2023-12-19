@@ -9,7 +9,7 @@ function Set-WorkdayEndpoint {
 
 .PARAMETER Endpoint
     The curent Endpoints used by this module are:
-    'Human_Resources', 'Staffing'
+    'Human_Resources', 'Integrations', 'Staffing', 'Talent'
 
 .PARAMETER Uri
     Uri for this Endpoint.
@@ -38,7 +38,7 @@ Integrations,https://SERVICE.workday.com/ccx/service/TENANT/Integrations/v26.0
     param (
         [parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true)]
-        [ValidateSet('Human_Resources', 'Integrations', 'Staffing')]
+        [ValidateSet('Human_Resources', 'Integrations', 'Staffing', 'Talent')]
         [string]$Endpoint,
         [parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true)]

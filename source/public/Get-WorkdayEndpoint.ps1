@@ -8,7 +8,7 @@ function Get-WorkdayEndpoint {
 
 .PARAMETER Endpoint
     The curent Endpoints used by this module are:
-    'Human_Resources', 'Staffing'
+    'Human_Resources', 'Integrations', 'Staffing', 'Talent'
 
 .EXAMPLE
 
@@ -27,7 +27,7 @@ Get-WorkdayEndpoint
     [CmdletBinding()]
     param (
         [parameter(Mandatory=$false)]
-        [ValidateSet('Human_Resources', 'Integrations', 'Staffing')]
+        [ValidateSet('Human_Resources', 'Integrations', 'Staffing', 'Talent')]
         [string]$Endpoint
     )
 
