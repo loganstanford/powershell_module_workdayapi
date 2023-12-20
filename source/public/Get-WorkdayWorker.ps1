@@ -65,6 +65,7 @@ Get-WorkdayWorker -WorkerId 123 -IncludePersonal
         [switch]$IncludePersonal,
         [switch]$IncludeWork,
         [switch]$IncludeDocuments,
+        [switch]$IncludeQualifications,
         [DateTime]$AsOfEntryDateTime = (Get-Date),
         # Outputs raw XML, rather than a custom object.
         [switch]$Passthru,
@@ -99,6 +100,7 @@ Get-WorkdayWorker -WorkerId 123 -IncludePersonal
     <bsvc:Include_Organizations>false</bsvc:Include_Organizations>
     <bsvc:Include_Roles>false</bsvc:Include_Roles>
     <bsvc:Include_Worker_Documents>false</bsvc:Include_Worker_Documents>
+    <bsvc:Include_Qualifications>false</bsvc:Include_Qualifications>
   </bsvc:Response_Group>
 </bsvc:Get_Workers_Request>
 '@
@@ -130,6 +132,10 @@ Get-WorkdayWorker -WorkerId 123 -IncludePersonal
 
         if ($IncludeDocuments) {
             $request.Get_Workers_Request.Response_Group.Include_Worker_Documents = 'true'
+        }
+
+        if ($IncludeQualifications) {
+            $request.Get_Workers_Request.Response_Group.Include_Qualifications = 'true'
         }
 
         if ($IncludeInactive) {
