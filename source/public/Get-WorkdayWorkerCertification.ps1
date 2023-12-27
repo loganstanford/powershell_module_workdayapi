@@ -1,4 +1,31 @@
 function Get-WorkdayWorkerCertification {
+<#
+.SYNOPSIS
+    Gets a worker's certifications as Workday XML.
+
+.DESCRIPTION
+    Gets a worker's certifications as Workday XML.
+
+.PARAMETER WorkerId
+    The Worker's Id at Workday.
+
+.PARAMETER WorkerType
+    The type of ID that the WorkerId represents. Valid values
+    are 'WID', 'Contingent_Worker_ID' and 'Employee_ID'.
+
+.PARAMETER Human_ResourcesUri
+    Human_Resources Endpoint Uri for the request. If not provided, the value
+    stored with Set-WorkdayEndpoint -Endpoint Human_Resources is used.
+
+.PARAMETER Username
+    Username used to authenticate with Workday. If empty, the value stored
+    using Set-WorkdayCredential will be used.
+
+.PARAMETER Password
+    Password used to authenticate with Workday. If empty, the value stored
+    using Set-WorkdayCredential will be used.
+
+#>
 
     [CmdletBinding()]
     param(
@@ -44,12 +71,14 @@ function Get-WorkdayWorkerCertification {
         Issuer                      = $null
         Issued_Date                 = $null
         Expiration_Date             = $null
+        Country_WID                 = $null
         Specialty_WID               = $null
         Specialty_ID                = $null
         SubSpecialty_WID            = $null
         SubSpecialty_ID             = $null
     }
 
+    
     $WorkerXml.GetElementsByTagName('wd:Certification') | ForEach-Object {
         $o = $certificationTemplate.PsObject.Copy()
         $o.Certification_ID = $_.SelectSingleNode('wd:Certification_Reference/wd:ID[@wd:type="Certification_Skill_ID"]', $NM).InnerText
@@ -66,6 +95,7 @@ function Get-WorkdayWorkerCertification {
         $o.Specialty_WID = $_.SelectSingleNode('wd:Certification_Data/wd:Specialty_Achievement_Data/wd:Specialty_Reference/wd:ID[@wd:type="WID"]', $NM).InnerText
         $o.SubSpecialty_ID = $_.SelectSingleNode('wd:Certification_Data/wd:Specialty_Achievement_Data/wd:Subspecialty_Reference/wd:ID[@wd:type="Subspecialty_ID"]', $NM).InnerText
         $o.SubSpecialty_WID = $_.SelectSingleNode('wd:Certification_Data/wd:Specialty_Achievement_Data/wd:Subspecialty_Reference/wd:ID[@wd:type="WID"]', $NM).InnerText
+        $o.Country_WID = $WorkerXml.Get_Workers_Response.Response_Data.Worker.Worker_Data.Qualification_Data.Certification.Certification_Data.Country_Reference.Id[0].'#text'
         Write-Output $o
     }
 

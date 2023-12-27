@@ -56,6 +56,7 @@ Change log available at: https://github.com/treestryder/powershell_module_workda
         'Update-WorkdayWorkerPhone',
 
         'Get-WorkdayWorkerCertification',
+        'Set-WorkdayWorkerCertification',
         
         'Start-WorkdayIntegration',
         'Get-WorkdayIntegrationEvent',
