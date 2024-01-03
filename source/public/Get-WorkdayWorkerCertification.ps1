@@ -52,7 +52,7 @@ function Get-WorkdayWorkerCertification {
     if ([string]::IsNullOrWhiteSpace($Human_ResourcesUri)) { $Human_ResourcesUri = $WorkdayConfiguration.Endpoints['Human_Resources'] }
 
     if ($PsCmdlet.ParameterSetName -eq 'Search') {
-        $response = Get-WorkdayWorker -WorkerId $WorkerId -WorkerType $WorkerType -IncludeQualifications -Passthru -Human_ResourcesUri $Human_ResourcesUri -Username:$Username -Password:$Password -IncludeInactive:$IncludeInactive -ErrorAction Stop
+        $response = Get-WorkdayWorker -WorkerId $WorkerId -WorkerType $WorkerType -IncludeQualifications -IncludeDocuments -Passthru -Human_ResourcesUri $Human_ResourcesUri -Username:$Username -Password:$Password -IncludeInactive:$IncludeInactive -ErrorAction Stop
         $WorkerXml = $response.Xml
     }
 
@@ -76,6 +76,15 @@ function Get-WorkdayWorkerCertification {
         Specialty_ID                = $null
         SubSpecialty_WID            = $null
         SubSpecialty_ID             = $null
+        Documents                   = @()
+    }
+
+    $documentTemplate = [PSCustomObject]@{
+        File_Name                   = $null
+        Comment                     = $null
+        File                        = $null
+        Document_Category_Reference = $null
+        Content_Type                = $null
     }
 
     
@@ -96,7 +105,20 @@ function Get-WorkdayWorkerCertification {
         $o.SubSpecialty_ID = $_.SelectSingleNode('wd:Certification_Data/wd:Specialty_Achievement_Data/wd:Subspecialty_Reference/wd:ID[@wd:type="Subspecialty_ID"]', $NM).InnerText
         $o.SubSpecialty_WID = $_.SelectSingleNode('wd:Certification_Data/wd:Specialty_Achievement_Data/wd:Subspecialty_Reference/wd:ID[@wd:type="WID"]', $NM).InnerText
         $o.Country_WID = $WorkerXml.Get_Workers_Response.Response_Data.Worker.Worker_Data.Qualification_Data.Certification.Certification_Data.Country_Reference.Id[0].'#text'
+        
+        foreach ($document in $_.SelectNodes('wd:Certification_Data/wd:Worker_Document_Data', $NM)) {
+            $d = $documentTemplate.PsObject.Copy()
+            $d.File_Name                    = $document.File_Name
+            $d.Comment                      = $document.Comment
+            $d.File                         = $document.File
+            $d.Document_Category_Reference  = $document.SelectSingleNode('wd:Document_Category_Reference/wd:ID[@wd:type="WID"]', $NM).InnerText
+            $d.Content_Type                 = $document.Content_Type
+            $o.Documents += $d
+        }
+        
         Write-Output $o
     }
 
 }
+
+Get-WorkdayWorkerCertification -WorkerId 2000585
